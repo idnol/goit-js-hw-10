@@ -26,29 +26,20 @@ function handleChange() {
   errorText.classList.add('display-none');
   info.classList.add('display-none');
   loader.classList.remove('display-none');
-  fetchCatByBreed(this.value, SEARCH_URL)
+  fetchCatByBreed(this.value, SEARCH_URL, API)
     .then(result => {
-      const obj = {};
-      obj.img  = result.data[0].url;
-      fetchBreeds (BASE_URL, API)
-        .then(response => {
-          const cat = response.data.filter(item => item.id === this.value);
-          info.innerHTML = `
-            <img src='${obj.img}' alt='${cat[0].name}' width='200'>
+      const img  = result.data[0].url;
+      const {name, description, temperament} = result.data[0].breeds[0];
+      info.innerHTML = `
+            <img src='${img}' alt='${name}' width='200'>
             <div class='text'>
-              <h2>${cat[0].name}</h2>
-              <p>${cat[0].description}</p>
-              <p><span>Temperament: </span>${cat[0].temperament}</p>
+              <h2>${name}</h2>
+              <p>${description}</p>
+              <p><span>Temperament: </span>${temperament}</p>
             </div>
           `;
-          loader.classList.add('display-none');
-          info.classList.remove('display-none');
-        })
-        .catch(error => {
-          loader.classList.add('display-none');
-          errorText.classList.remove('display-none');
-          console.error(error);
-        });
+      loader.classList.add('display-none');
+      info.classList.remove('display-none');
     })
     .catch(error => {
       loader.classList.add('display-none');
